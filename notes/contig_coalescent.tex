@@ -1,0 +1,500 @@
+\documentclass{article}
+%\documentclass[aps,prl,showpacs,twocolumn]{revtex4}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{natbib}
+\newcommand{\bm}[1]{\mbox{\boldmath $#1$}}
+\newcommand{\EQ}[1]{Eq.~(\ref{eq:#1})}
+\newcommand{\EQS}[2]{Eqs.~(\ref{eq:#1)} and (\ref{eq:#2})}
+\newcommand{\FIG}[1]{Fig.~\ref{fig:#1}}
+\newcommand{\REF}[1]{ref.~\citep{#1}}
+
+\begin{document}
+\title{Contig Coalescent}
+\maketitle
+
+
+\section{Parameterization of recombinant population}
+We would like to compress the representation of a population, which takes $N L\rho$ "symbols" ($\rho$ being the linear density of segregating sites) which might be possible, if regions of size $\xi$ - the LD length - condense into a few clones, so that genotypic entropy on that scale is much smaller that $\rho \xi \log (\rho \xi )^{-1}$. The idea is that the genome is a curve in some high dimensional space with persistence length $\xi$ and we can use a set of overlapping contigs ${a,b,c,...}$ as local approximation to individual genomes - just like one would use overlapping coordinate "patches" to parameterize a curvy manifold. A genotype is this defined as
+\begin{equation}
+g_{\alpha}=\left \{ ...(ab)_i (bc)_j (cd)_k ... \right \}, \left \{ ...m_b,m_c...\right \}
+\end{equation}
+which defines a walk on a graph defined by a set of recombination crossover points ${...ijk...}$. In also allows a set of mutational differences, say $m_b$ distinguishing each genotype from the local contig $b$ reference which covers genome region $x$ between breakpoints $i<x<j$.
+
+In defining the contigs which we want to be good local approximants (in the clustering sense, in Hamming metric)  we want to exploit the natural clustering provided by the genealogy of the population. In particular we know that every locus of the chromosome eventually comes to a common ancestor of that local  region - which we expect to be on average of size $\xi$.  The number of such common ancestors will be $\sim L/\xi$. If we look at a time shorter than the full local coalescence, ancestral population will still be much smaller than $N$ but we can choose the time to achieve desired local multiplicity by contigs. This multiplicity, as well as the contig overlap is is completely defined by the ancestral weight profiles
+\begin{equation}
+w_x^a \text{   s.t.        } \sum_a w_x^a =N
+\end{equation}
+We will want to have a hash table listing contigs that cover any giving $x$: for each $x$ the list with have length of order of the "multiplicity". Weight profiles also define which contigs overlap and can by recombined
+\begin{equation}
+J_{ab}=\theta (\sum_x w_x^a  w_x^b)
+\end{equation}
+which give the edges of the contig connectivity graph, that individual genomes walk over. Interestingly $N^{-2} w_x^aw_x^b$ give a probability to generate a $ab$ crossover at point $x$.
+
+It may be interesting to examine contig LD between points $x$ and $y$: $<ab>_{xy} -<a>_x<b>_y$
+
+\section{Dynamics of weights in the ancestral population and the dynamics of contig distribution in the current population}
+Suppose we start with a population at time zero. All of it's members $\alpha=1,...,N$ have weights $w_{\alpha}(x,t)=1$ at $t=0$. Updating weights in that ancestral population as the current population moves on, $w_{\alpha}(x,t)$'s will develop finite support and pile up while still satisfying the tiling sum rule: $\sum_{\alpha=1}^N w_{\alpha}(x,t)=N$ for any $x$ and $t$.
+
+At the same time we examine the contig distribution in the current population, the contig being defined simply as the "footprint" (albeit mutated) of the $\alpha$ ancestor in the present day population. As the number of surviving ancestral lineages $M(t)$ becomes $<<N$ we can study interesting correlations
+of contig "strings" within the population.
+
+\section{Can we calculate ancestral weight profiles?}
+Consider a contig stretching from chromosomal location 0 to m, what is the probability that it will be exist with weight profile $w(l)$  $t$ generations later? Of course $w(l)$ can be non-zero only for $l \le m$. Let this $m$-long contig contribute additive fitness $x_m$ - a quenched random number with variance $\sigma^2 m/L$, which rides on the background fitness of the rest of the genome $\xi_m$ - an annealed random number with variance $\sigma^2 (L-m)/L \approx \sigma^2$. Let  $P_t (w(l),\xi_m | x_m,m)$ be the probability. It is governed by the first step equation
+\begin{eqnarray}
+P_t (w(l),\xi | x_m,m)&=& P_{t-1} (w(l),\xi | x_m,m)+\\
+&+&\Delta t (1+x_m+\xi-{\bar \xi}(t)) \sum_{\{w'(l)\}} P_{t-1} (w(l)-w'(l),\xi | x_m,m)P_{t-1} (w'(l),\xi | x_m,m)\\
+&+&\Delta t \delta_{w(l)=0}-\Delta t (2+x_m+\xi-{\bar \xi}(t)-r) P_{t-1} (w(l),\xi | x_m,m)\\
+&+&\Delta t {r \over L}  \sum_{m'=0}^{m-1}  \int d\xi' \rho(\xi'-{\bar \xi}(t)) P_{t-1} (w(l),\xi' | x_m',m')\\
+&+&\Delta t r (1-{m \over L}) \int d\xi' \rho(\xi'-{\bar \xi}(t)) P_{t-1} (w(l),\xi' | x_m,m)
+\end{eqnarray}
+The last term describes recombination event hitting the background and randomizing $\xi$ - conceivably one may want to worry about the persistence of correlations in $\xi$, but let's do the simpler thing first. The term before last describes the outcome of possible crossovers at $m'<m$, but again we simplify, allowing only recombinations that cut off the "tail" of the genome, while keeping the head at $m=0$.
+
+For the generating function becomes
+\begin{eqnarray}
+\partial_t \hat{P}_t (z(l),\xi | x_m,m)&=& 
+(1+x_m+\xi-{\bar \xi}(t)) \hat{ P}_{t}^2 (z(l),\xi | x_m,m)+1\\
+&-&(2+x_m+\xi-{\bar \xi}(t)-r) \hat{ P}_{t} (z(l),\xi | x_m,m)\\
+&+& {r  \over L} \sum_{m'=0}^m  \int d\xi' \rho(\xi'-{\bar \xi}(t)) \hat{ P}_{t} (z(l),\xi' | x_m',m')\\
+&+& r (1-{m \over L}) \int d\xi' \rho(\xi'-{\bar \xi}(t)) \hat{ P}_{t} (z(l),\xi' | x_m,m)
+\end{eqnarray}
+Introducing $\psi_t (z(l),\xi | x_m,m)=1-\hat{P}_t (z(l),\xi | x_m,m)$ we have
+\begin{eqnarray}
+\partial_t \psi_t (z(l),\xi | x_m,m)&=& (x_m+\xi-{\bar \xi}(t)-r) \psi_t (z(l),\xi | x_m,m)
+- \psi_t^2 (z(l),\xi | x_m,m)\\
+&+& {r  \over L} \sum_{m'=0}^{m-1}  \int d\xi' \rho(\xi'-{\bar \xi}(t)) \psi_t (z(l),\xi' | x_m',m')\\
+&+& r (1-{m \over L}) \int d\xi' \rho(\xi'-{\bar \xi}(t)) \psi_t (z(l),\xi' | x_m,m)
+\end{eqnarray}
+Of course we also need to remember the initial condition
+\begin{eqnarray}
+\psi_{t=0} (z(l),\xi | x_m,m)=1-\hat{P}_{t=0} (z(l),\xi | x_m,m)=1-\prod_{l=0}^m z(l)
+\end{eqnarray}
+
+As in the famous draft paper we introduce
+\begin{eqnarray}
+\Phi_t (z(l) | x_m,m)&=&\int d\xi \rho(\xi-{\bar \xi}(t)) \psi_{t} (z(l),\xi | x_m,m)
+\end{eqnarray}
+which obeys
+\begin{eqnarray}
+\partial_t \Phi (z(l)| x_m,m)&=& (x_m-{rm \over L} ) \Phi (z(l) | x_m,m)\\
+&+& {r  \over L} \sum_{m'=0}^{m-1}   \Phi (z(l)| x_m',m')\\
+&-& \int d\xi \rho( \xi-{\bar \xi}(t) ) \psi^2 (z(l),\xi | x_m,m)\\
+\end{eqnarray}
+which introduces some twists on the old equation. Of course $x_m$ is our quenched random walk as a function of $m$. Going to a continuum limit $u=m/L$ we have
+\begin{eqnarray}
+\partial_t \Phi_t (z(l)| x_u,u)&=& (x_u-ru ) \Phi_t (z(l) | x_u,u)\\
+&+& {r  \over L} \int_{0}^u du'  \Phi_t (z(l)| x_{u'},u')\\
+&-& \int d\xi \rho( \xi-{\bar \xi}(t) ) \psi^2 (z(l),\xi | x_u,u)\\
+\end{eqnarray}
+
+Let us for a moment assume that $\psi^2$ term is small and see what's left. We define $\phi_t(z,u)=\int_{0}^u du'  \Phi_t (z(l)| x_{u'},u')$
+which is then governed by
+\begin{eqnarray}
+\partial_t \partial_u \phi_t (z,u)&=& (x_u-ru ) \partial_u \phi_t (z,u)+ r \phi_t (z,u)
+\end{eqnarray}
+which has a stationary solution
+\begin{eqnarray}
+ \phi (z,u)&=& A(z(l)) e^{ -r \int_0^u  {du' \over r^{-1}x_{u'}-u' }}
+\end{eqnarray}
+
+\section*{Recombinant Pedigrees and the Furstenberg-Oseledec Multiplicative Ergodic Theorem.}
+Following Derrida and Co (1999), also Barton and Etheridge (2011) let's follow bi-parental pedigrees of the presently living individuals
+back in time. Clearly as the number of ancestors increases exponentially, after about $\log N$ generations, pedigrees of all members of the current population start seriously overlapping. We want to understand this overlap for a random pair of pedigrees and also to calculate the distribution of "reproductive values" in the ancestral population, "reproductive value" - or weight - being the genetic contribution of a given ancestor to the present day population. 
+
+Let us define this weight, by saying that the two parents of an individual $i$ transmit respectively $\omega_i$ and $1-\omega_i$ fraction of the genome where $0<\omega_i<1$ is random. Let the weight vector of the population at the present time $t=0$ be
+$w_i(0)=1$. Given the weight vector at $t$ we have a recursion
+\begin{eqnarray}
+w_i(t+1)=m_{ij}(t)w_j(t)
+\end{eqnarray}
+where "parentage" matrix is
+\begin{eqnarray}
+m_{ij}(t)=\delta_{i,p_j}\omega_j+\delta_{i,m_j}(1-\omega_j)
+\end{eqnarray}
+with $p_j$ and $m_j$ being the two parents of $j$. We shall assume $p_j$ and $m_j$ are chosen at random from amongst $N$
+Note that $m_{ij} \ge 0$ and the column sum of $m$ is a unity
+\begin{eqnarray}
+\sum_{i=1}^N m_{ij}(t)=1
+\end{eqnarray}
+so it is a Markov matrix
+\begin{eqnarray}
+w_{i}(T)=\left [ \prod_{t=0}^T {\bf m} (t) \right ]_{ij} w_j(0)
+\end{eqnarray}
+According to the Furstenberg-Oseledec theorem, a product of random matrices like that rapidly converges yielding a well-defined distribution $p(w)$. The remarkable thing here is that this statement does is true without explicit averaging over randomness and is true for a single realization, i.e. there is self-averaging in the product. It is closely related to the distribution of eigenvalues of the product of random matrices.
+
+\section*{Derrida's distribution for Biparental Pedigrees.}
+Alternatively, this weight distribution was computed by Derrida et al, via a a MF recursion:
+\begin{eqnarray}
+ p_{t+1} (w) =\sum_{k=0}^{\infty}{2^k e^{-2}\over k!} \prod_{i=1}^k \int d{w_i} \left [\prod_{i=1}^k p_t( w_i) \right ] <\delta(w-\sum_{i=1}^k \omega_i w_i )>_{\omega}
+\end{eqnarray}
+which expresses ancestral weight in terms of its offspring, the number of which is given by a Poisson distribution with average offsrping number equal to 2. For the generating function
+\begin{eqnarray}
+h_t(\lambda)=\int_0^1 dw p_t (w) e^{-\lambda w}
+\end{eqnarray}
+the recursion looks like this
+\begin{eqnarray}
+& h_{t+1} (\lambda) =\sum_{k=0}^{\infty}{2^k e^{-2}\over k!} \prod_{i=1}^k \left [\int d{ w_i} p_t( w_i) e^{-\lambda \omega_i w_i}\right ] 
+\end{eqnarray}
+\begin{eqnarray}
+h_{t+1} (\lambda)=\int_0^1 d\omega \exp \left [ -2+2 h_t (\omega \lambda) \right ] 
+\end{eqnarray}
+The fixed-point generation function $h_* (\lambda)$ therefore solves
+\begin{eqnarray}
+h_* (\lambda)=\int_0^1 d\omega \exp \left [ -2+2 h_* (\omega \lambda) \right ] 
+\end{eqnarray}
+This equation may be compared to the simpler case of $\omega=1/2$ solved in the 1st paper by Derrida
+\begin{eqnarray}
+h(\lambda)= \exp \left [ -2+2 h ({ \lambda \over 2}) \right ] 
+\end{eqnarray}
+Both give the same transcendental equation for the extinction probability:
+\begin{eqnarray}
+h(\infty)= \exp \left [ -2+2 h (\infty) \right ] 
+\end{eqnarray}
+
+\section*{Recombinant Pedigrees for a Linear Chromosome.}
+We can relate the pedigree approach to what we were doing with haplotype coalscent simply by generalizing the parentage matrix to make it explicitly depend on position along the chromosome $0<x<1$.
+
+\begin{eqnarray}
+M_{ij}(x,t)=\delta_{i,p_j}\theta(x-x_j)+\delta_{i,m_j}(1-\theta(x-x_j))
+\end{eqnarray}
+where $x_j$ is a random crossover point which appeared in individual $j$. Note that $i$ here are parent labels.
+
+\begin{eqnarray}
+w_{i}(x,T)=\left [ \prod_{t=0}^T {\bf M} (x,t) \right ]_{ij} w_j(x,0)
+\end{eqnarray}
+
+The random matrix product defines the "back-propagator"
+\begin{eqnarray}
+g_{ij}(x,T)=\left [ \prod_{t=0}^T {\bf M} (x,t) \right ]_{ij} 
+\end{eqnarray}
+which upon averaging over parents and crossovers gives the probability that locus $x$ of $j$ genome came from ancestor $i$ that lived $T$ generations earlier.
+
+This backpropagator has some nice properties:
+\begin{eqnarray}
+\sum_i g_{ij}(x)=1
+\end{eqnarray}
+There's only a single parent for a given locus, so asexual coalescent is recovered if we only consider only single $x$-locus! 
+
+Othogonality:
+\begin{eqnarray}
+\int dx g_{ij}(x)g_{kj}(x)=\delta_{ik}\nu_{ij}
+\end{eqnarray}
+where
+\begin{eqnarray}
+\nu_{ij}=\int dx g_{ij}(x)
+\end{eqnarray}
+is the fraction of the $i$-th genome originating from $j$-th ancestor.
+
+The correlation between different loci is captured in the matrix product by the correlation in the "pedigree trajectory".
+
+It is interesting to consider the overlap of ancestors
+
+\begin{eqnarray}
+C_{ij}(x,x'|T)=\sum_{k} g_{ki}(x,T)g_{kj}(x',T)=<\left [ \prod_{t=0}^T {\bf M} (x',t) \right ]^{\dagger} \left [ \prod_{t=0}^T {\bf M} (x,t) \right ]>
+\end{eqnarray}
+which start looking like some partition functions, that we can perhaps tackle! The self-averaging of the matrix product may be the key to calculating as we can perhaps do some perturbation theory for $x$ close to $x'$.
+
+Let's write down an iterative equation
+\begin{eqnarray}
+&{\bf C}_{lm}(x,x'|T)= {\bf g}^{\dagger}(x,T-1)<{\bf M} ^{\dagger}(x'){\bf M} (x)>{\bf g}(x',T-1)\\
+&= \sum_{ij} g_{il}(x',T-1) g_{jm}(x,T-1) \times \\
+&\sum_k <[\delta_{k,p_i}\theta(x-x_i)+\delta_{k,m_i}{\bar \theta}(x-x_i)][\delta_{k,p_j}\theta(x'-x_j)+\delta_{k,m_j}{\bar \theta}(x'-x_j)]>\\
+&= \sum_{ij} g_{il}(x',T-1) g_{jm}(x,T-1) \times \\
+& [ \delta_{ij} <[\theta(x-x_i)\theta(x'-x_i)+{\bar \theta}(x-x_i){\bar \theta}(x'-x_i)]>  \\
+&+  {1 \over N} (1-\delta_{ij})<[\theta(x-x_i)+{\bar \theta}(x-x_i)][\theta(x'-x_j)+{\bar \theta}(x'-x_j)]> ]\\
+&= {\bf C}_{lm}(x,x'|T-1) [1-{1 \over N} -{|x-x'| \over L}]+{1 \over N} \sum_{ij} g_{il}(x',T-1) g_{jm}(x,T-1)\\
+&= {\bf C}_{lm}(x,x'|T-1) [1-{1 \over N} -{|x-x'| \over L}]+{1 \over N}
+\end{eqnarray}
+
+Continuous time approximation of this is $\tau = T/N$
+\begin{eqnarray}
+&{d {\bf C}(x,x'|\tau)\over d\tau} = -[1+{N|x-x'| \over L}]{\bf C}(x,x'|\tau)+1
+\end{eqnarray}
+\begin{eqnarray}
+&{\bf C}_{ij}(x,x'|\tau)= \delta_{ij}  e^{-[1+{|x-x'| N \over L }]\tau} +  \int_0^{\tau} d\tau' e^{-[1+{|x-x'|  N\over L}](\tau-\tau')}\\
+&= \delta_{ij}  e^{-[1+{|x-x'| N \over L }]\tau}+ { [ 1- e^{-[1+{|x-x'| N \over L }]\tau}] \over 1+{|x-x'| N \over L } } 
+\end{eqnarray}
+
+This makes perfect sense e.g. for $T \gg L/|x-x'|$
+ and $i \neq j$ we have $ {\bf C}_{ij}(x,x'|T)\rightarrow LN^{-1} /|x-x'|$ which for $|x-x'| \rightarrow L$ goes to $1/N$, meaning that ancestors of the loci at the right and left ends of the chromosome are completely uncorrelated, but may by chance have happened to come from the same individual. On the other hand for $x = x'$ for ${\bf C}_{ii}(x,x|\tau)=1$ and for $i \neq j$  ${\bf C}_{ij}(x,x|\infty)=1$ reflecting convergence to the common ancestor with probability 1.
+ 
+Let's try to go to the 3d order
+\begin{eqnarray}
+&{\bf C}_{lmn}(x,x',x''|T)= \sum_{k} g_{kl}(x,T) g_{km}(x',T)g_{kn}(x'',T) \\
+&= \sum_{ijh} g_{il}(x,T-1) g_{jm}(x',T-1) g_{hm}(x',T-1) \times \\
+&\sum_k <[\delta_{k,p_i}\theta(x-x_i)+\delta_{k,m_i}{\bar \theta}(x-x_i)][\delta_{k,p_j}\theta(x'-x_j)+\delta_{k,m_j}{\bar \theta}(x'-x_j)]\\
+&\times [\delta_{k,p_h}\theta(x''-x_h)+\delta_{k,m_h}{\bar \theta}(x''-x_h)]>\\
+&= {\bf C}_{lmn}(x,x',x''|T-1) [1-{3 \over N}-{|x-x''| \over L}]\\
+&+{1 \over N}{\bf C}_{lm}(x,x'|T-1) [1-{1 \over N}-{|x-x'| \over L}]+{1 \over N}{\bf C}_{ln}(x,x''|T-1) [1-{1 \over N}-{|x-x''| \over L}]\\
+&+{1 \over N}{\bf C}_{mn}(x',x''|T-1) [1-{1 \over N}-{|x''-x'| \over L}]+{1 \over N^2}
+\end{eqnarray}
+provided, without loss of generality, the $x<x'<x''$ ordering.
+
+Let's streamline notation using $\xi_{lm}=|x_l - x_m |N/L$ and use
+ continuous time $\tau =T/N$:
+\begin{eqnarray}
+&{ d \over d\tau} {\bf C}_{lmn}= 
+ -[3+max(\xi_{lm},\xi_{mn},\xi_{ln})]{\bf C}_{lmn}+{\bf C}_{lm} 
++{\bf C}_{ln} +{\bf C}_{mn}\\
+ &-{1 \over N} \left \{ (1+\xi_{lm} ){\bf C}_{lm} 
++(1+\xi_{ln}){\bf C}_{ln} +(1+\xi_{mn}){\bf C}_{mn} -1 \right \}
+\end{eqnarray}
+
+Similarly for the 4th order ancestry correlator we will find (to the leading order in $1/N$)
+\begin{eqnarray}
+&{ d \over d\tau} {\bf C}_{klmn}= 
+ -[7+\xi_{klmn}]{\bf C}_{klmn}+{\bf C}_{klm} +{\bf C}_{kmn}
++{\bf C}_{kln} +{\bf C}_{lmn}\\
+&+{\bf C}_{kl}{\bf C}_{mn} +{\bf C}_{km}{\bf C}_{ln} +{\bf C}_{kn}{\bf C}_{lm} 
+\end{eqnarray}
+where $\xi_{klmn}$ is defined as a max of all pairwise distances between loci (each defined via $\xi_{lm}=N|x_l-x_m|/L$). Note the pretty simple structure! The higher order correlator is merely fed by the lower ones defined by all possible trees, i.e. sum over all possible splits  of the set into two subsets.
+
+Presumably this calculation contains a generalization of Derrida's universal ratios, which we can try to recover by considering the coalescence in the asexual case (i.e. $\xi 's =0$). Pair coalescent is governed by
+\begin{eqnarray}
+&C_2(\tau)=  1- e^{-\tau}
+\end{eqnarray}
+\begin{eqnarray}
+\tau_2=  -\int_0^{\infty} d\tau \tau {d \over d\tau }[1-C_2 (\tau)]=\int_0^{\infty} d\tau [1-C_2 (\tau)]=1
+\end{eqnarray}
+Triple coalescent obeys
+\begin{eqnarray}
+&{ d \over d \tau} C_3(\tau)=  -3C_3(\tau)+3 C_2(\tau)
+\end{eqnarray}
+\begin{eqnarray}
+&C_3(\tau)=  3\int_0^{\tau}d \tau' e^{-3(\tau-\tau')}[1- e^{-\tau'}]=1- {3 \over 2} e^{-\tau}+{1 \over 2}e^{-3\tau} 
+\end{eqnarray}
+\begin{eqnarray}
+\tau_3=\int_0^{\infty} d\tau [1-C_3 (\tau)]={ 4 \over 3}
+\end{eqnarray}
+Quadruple coalescent obeys
+\begin{eqnarray}
+&{ d \over d \tau} C_4(\tau)=  -7C_4(\tau)+4C_3(\tau)+3 C_2^2(\tau)
+\end{eqnarray}
+\begin{eqnarray}
+&C_4(\tau)=  4\int_0^{\tau}d \tau' e^{-7(\tau-\tau')}[1- {3 \over 2} e^{-\tau'}+{1 \over 2}e^{-3\tau'}]\\
+&+3\int_0^{\tau}d \tau' e^{-7(\tau-\tau')}[1- e^{-\tau'}]^2\\
+&=1-e^{-7\tau}-\int_0^{\tau}d \tau' e^{-7(\tau-\tau')}[12 e^{-\tau'}-3 e^{-2\tau'}-2e^{-3\tau'}]\\
+&=1-2e^{-\tau}+{3 \over 5} e^{-2\tau}+{1 \over 2} e^{-3\tau}-{1\over 10} e^{-7\tau}
+\end{eqnarray}
+\begin{eqnarray}
+\tau_4=2-{3 \over 10}-{1 \over 6}+{1 \over 70}={3 \over 2}
+\end{eqnarray}
+as expected for Kingman's coalescent.
+
+\section*{Matrix products beyond neutrality or another take on Fitness Class Coalescent.}
+
+Let's consider the same ancestral relation matrix
+\begin{eqnarray}
+m_{ij}=\delta_{i,a_j}
+\end{eqnarray}
+(where $a_j$ labeles the ancestor of $j$ in the previous generation
+but now associate each $i$ with a fitness $x_i$ (let's not confuse this $x$ with chromosomal position!) picked from a stationary distribution $p(x)=e^{S(x)}$ corresponding either to the traveling wave (in comoving frame) or dynamic balance. Suppose we also know the transition probability matrix $q(x_j |x_{a_j})$ which satisfies:
+\begin{eqnarray}
+p(x)=\int dy q(x|y)p(y)
+\end{eqnarray}
+By Bayes inverse than tells us that the ancestor $a_j$ of $j$ with $x_j$ is distributed according to
+\begin{eqnarray}
+Q(x_{a_j}|x_j)=q(x_j|x_{a_j}){p(x_{a_j}) \over p(x_{j})}
+\end{eqnarray}
+We may want to use later the special case of Detailed Balance, in which
+\begin{eqnarray}
+q(x|y)=e^{{1 \over 2}[S(x)-S(y)]} \gamma(x,y)
+\end{eqnarray}
+with $\gamma(x,y)=\gamma(y,x)$. In that case
+\begin{eqnarray}
+Q(x_{a_j}|x_j)=q(x_j|x_{a_j})e^{ [S(x_{a_j})-S(x_{j})]}=e^{{1 \over 2} [S(x_{a_j})-S(x_{j})]}\gamma(x_j,x_{a_j})
+\end{eqnarray}
+
+Let us now consider the two-point coalescent probability
+
+\begin{eqnarray}
+&C_{kk'}(T)=\sum_i <m_{ij}m_{ij'}><g_{jk}(T-1)g_{j'k'}(T-1)>\\
+&=(1- {1 \over N})\delta_{jj'} <g_{jk}(T-1)g_{j'k'}(T-1)>+\\
+&+\sum_i  <{Q(x_{i}|x_j)\over p(x_i)}{Q(x_i|x_{j'}) \over p(x_i)} g_{jk}(T-1)g_{j'k'}(T-1)>\\
+\end{eqnarray}
+where $<..>$ includes averaging over all $x_j$'s along the genealogies and $G(x_{i}|x_j)\over p(x_i)$ is the fraction of individuals from
+"bin" $x_i$ with offspring in at $x_j$. Hence we arrive at
+\begin{eqnarray}
+&{d \over dT} C_{kk'}(T)=- {1 \over N} C_{kk'}(T)+\\
+&+N \int dx p^{-1} (x) <{Q(x|x_j)Q(x|x_{j'}) } g_{jk}(T-1)g_{j'k'}(T-1)>\\
+&=- {1 \over N} C_{kk'}(T)+{1 \over N} \int dx p^{-1} (x) {Q_T(x|x_k)Q_T(x|x_{k'}) } 
+\end{eqnarray}
+Note that in the absence of the selection $q(x)$ is flat and so is $G_T(x|x_k)=1$ and our equation reduces to that for Kingman's coalescent. As usual we will want to rescale time to absorb the $1/N$ factor.
+
+Next let's assume Detailed Balance and diagonalize $\gamma_t(x,y)=\sum_{\alpha}e^{\lambda_{\alpha} t}\phi_{\alpha}(x)\phi_{\alpha}(y)$. Then
+\begin{eqnarray}
+&{d \over dt} C_{kk'}(t)=- C_{kk'}(t)+ \int dx e^{-S(x)}   e^{{1 \over 2} [2S(x)-S(x_{k})-S(x_{k'})]}\gamma_t(x,x_{k})\gamma_t(x,x_{k'})\\
+&=- C_{kk'}(t)+ \int dx \gamma_t(x,x_{k})\gamma_t(x,x_{k'})e^{-{1 \over 2} [S(x_{k})+S(x_{k'})]}\\
+&=- C_{kk'}(t)+ \sum_{\alpha, \beta}e^{\lambda_{\alpha} t+\lambda_{\alpha} t } \times \\
+&\times \int dx \phi_{\alpha}(x)\phi_{\alpha}(x_{k})\phi_{\beta}(x)
+\phi_{\beta}(x_{k'})e^{-{1 \over 2} [S(x_{k})+S(x_{k'})]}\\
+&=- C_{kk'}(t)+ \sum_{\alpha}e^{2\lambda_{\alpha} t } \phi_{\alpha}(x_{k})
+\phi_{\alpha}(x_{k'})e^{-{1 \over 2} [S(x_{k})+S(x_{k'})]}
+\end{eqnarray}
+which means that if we define
+\begin{eqnarray}
+&{\hat C}_{\alpha \beta}(t)=\int dx_k \int dx_{k'} C_{kk'}(t)e^{{1 \over 2} [S(x_{k})+S(x_{k'})]}\phi_{\alpha}(x_{k}) \phi_{\beta}(x_{k'})
+\end{eqnarray}
+we will have
+\begin{eqnarray}
+&{d \over dt} {\hat C}_{\alpha \beta}(t)=-{\hat C}_{\alpha \beta}(t)+ e^{2\lambda_{\alpha} t }\delta_{\alpha \beta}
+\end{eqnarray}
+SImple enough!!
+
+It may also be useful to extend the 2-point object a little, by defining the 2-coalescence $density$
+\begin{eqnarray}
+&C_{kk'}(x,T)= \sum_i <\delta(x-x_{i})m_{ij}m_{ij'}><g_{jk}(T-1)g_{j'k'}(T-1)>
+\end{eqnarray}
+which should obey
+\begin{eqnarray}
+&{d \over dt} C_{kk'}(x,t)=- \int dx' \Delta Q(x,x') C_{kk'}(x',t)+ \gamma_t(x,x_{k})\gamma_t(x,x_{k'})e^{-{1 \over 2} [S(x_{k})+S(x_{k'})]}\\
+\end{eqnarray}
+where $\Delta Q(x,x')$ is the differential form of the (backward) fitness propagator: $\int dx \Delta Q(x,x')=1$
+
+We can next try to do the three-point coalescent.
+\begin{eqnarray}
+&C_{kk'k''}(T)= \sum_i <m_{ij}m_{ij'}m_{ij''}><g_{jk}(T-1)g_{j'k'}(T-1)g_{j''k''}(T-1)>\\
+&= (1-{3 \over N}) C_{kk'k''}(T-1)+{1 \over N} \int dx p^{-1} (x) {Q_T(x|x_k)C_{k'k''}(x,T) } +2 perms
+\end{eqnarray}
+and
+\begin{eqnarray}
+&{d \over dt}C_{kk'k''}(x,T)=  -3\int dx' \Delta Q(x,x') C_{kk'k''}(x',t)+ p^{-1} (x) {Q_t(x|x_k)C_{k'k''}(x,t) } +2 perms
+\end{eqnarray}
+Which, for the DB case, will again simplify in the eigen basis.
+
+The next thing to do is to try to calculate Derrida's ratio...
+
+\section*{DNA inheritance within a pedigree}
+Let's look along one (say male) lineage within a (bi-parental) pedigree, e.g. that of King David, going forward and ask: what's the probability $q_t(\xi)$ of a length $\xi$ segment of DNA (normalized as a fraction of chromosome length) to still be there after $t$ generations. 
+
+Let us first neglect the possibility of intermarriage between King David's offspring. Then the only thing that can happen from one generation to the next, is either it is lost altogether (with probability $(1-\xi)/2$), or, with equal probabilty, transmitted without change, or, chopped down to a smaller size. This is described by
+\begin{eqnarray}
+q_{t+1}(\xi)={1-\xi \over 2}q_{t}(\xi)+\int_{\xi}^1 d\xi ' q_{t}(\xi ')
+\end{eqnarray}
+for $\xi >0$.
+\begin{eqnarray}
+\int_0^1 d{\xi}q_{t}(\xi)=1-Q_{t}
+\end{eqnarray}
+where $Q_t$ is extinction probability.
+
+We can introduce the cumulant $\chi( \xi )=\int_{\xi}^1 d\xi ' q_{t}(\xi ')$ in terms of which the equation to solve is
+\begin{eqnarray}
+\partial_{\xi} \chi_{t+1}(\xi)={1-\xi \over 2}\partial_{\xi} \chi_{t}(\xi)-\chi_{t}(\xi )
+\end{eqnarray}
+with the initial condition: $\partial_{\xi} \chi_0(\xi)=-\delta (\xi-1)$. 
+
+Following Nicholas we'll Laplace transform w.r.t. discrete time: $\hat{\chi} (\xi, z)=\sum_{t=0}^{\infty}z^t \chi_{t}(\xi)$
+\begin{eqnarray}
+\partial_{\xi} \hat{\chi} (\xi, z)-\partial_{\xi} \chi_{0}(\xi)=z{1-\xi \over 2}\partial_{\xi} \hat{\chi} (\xi, z)-z\hat{\chi} (\xi, z)
+\end{eqnarray}
+\begin{eqnarray}
+\left [ 1-z{1-\xi \over 2} \right ]\partial_{\xi} \hat{\chi} (\xi, z)+z\hat{\chi} (\xi, z)=-\delta (\xi-1)
+\end{eqnarray}
+Integrating from $\xi=1-0^+$ to $\xi=1+0^+$ we find
+\begin{eqnarray}
+ \hat{\chi} (1+0^+, z)- \hat{\chi} (1-0^+, z)=-1
+\end{eqnarray}
+and since $\hat{\chi} (1+0^+, z)=0$  we have $\hat{\chi} (1-0^+, z)=1$. For $\xi <1$
+\begin{eqnarray}
+\partial_{\xi} \hat{\chi} (\xi, z)= - {2 \hat{\chi} (\xi, z) \over \xi-1+2z^{-1}}
+\end{eqnarray}
+Hence
+\begin{eqnarray}
+\hat{\chi} (\xi, z) = \left [ 1-(1-\xi){z \over 2} \right ]^{-2}
+\end{eqnarray}
+Let $u=1-\xi$ so that
+\begin{eqnarray}
+\hat{\chi} (u, z) = {2 \over u} \partial_z \left [ 1-z{u \over 2} \right ]^{-1}={2 \over u} \partial_z \sum_{t=0}^{\infty} ({ u \over 2 })^t z^t =\sum_{t=0}^{\infty} (t+1)({ u \over 2 })^t z^t 
+\end{eqnarray}
+from we identify a simple answer
+\begin{eqnarray}
+\chi_t ( \xi) =  2^{-t}(t+1)(1-\xi)^t 
+\end{eqnarray}
+and
+\begin{eqnarray}
+q_t ( \xi) =  2^{-t}t(t+1)(1-\xi)^{t-1} 
+\end{eqnarray}
+and the probability of loosing all of the King's DNA is
+\begin{eqnarray}
+Q_t  =  1-2^{-t}(t+1) 
+\end{eqnarray}
+On the other hand the length distribution, conditional on survival is
+\begin{eqnarray}
+q_t ( \xi)(1-Q_t)^{-1} =  t(1-\xi)^{t-1} 
+\end{eqnarray}
+which is happily correctly normalized to one.
+
+Our next task is to examine the process in the presence of possible recombination with another carrier of King's genes. We are particularly interested in this as a mechanism for slowing down the rate of shrinkage of the segment which comes from the possibility of recombination with an overlapping segment. 
+
+Let us focus on a contiguous  segment which lies in between loci $x$ and $y$ on the chromosome. Assume $0<x<y<1$ and define 2D probability density $\omega_t (x,y)$. By generalizing the previous argument we arrive at
+\begin{eqnarray}
+&\omega_{t+1} (x,y) = 2 \left \{ {1 \over 2} [1-(y-x)]\omega_t (x,y)+\right \} \\
+& +2\left \{{1 \over 2}\int_y^1 dy' \omega_t (x,y') \ [1-\int_0^ydx' \int_y^1 dy' \omega (x',y')]
++{1 \over 2}\int_0^x dx'\omega_t (x',y) [1-\int_0^xdx' \int_x^1 dy' \omega (x',y')]\right \}+\\
+&+\int_x^ydz   \int_z^1dy'  \omega_t (x,y') \int_0^zdx' \omega_t (x',y)
+\end{eqnarray}
+where the factor of two comes from the possibility of the segment coming down from either paternal or maternal line.
+
+Let us define a 2D cumulant via $\Omega (x,y)=\int_0^x dx' \int_y^1 dy' \omega (x',y')$ in terms of which
+
+\begin{eqnarray}
+&-\partial_x \partial_y \Omega_{t+1} (x,y) =  -[1-(y-x)]\partial_x \partial_y \Omega_t (x,y)+  \\
+&  + \partial_x \Omega_t (x,y)[1-\Omega(y,y)]
+- \partial_y \Omega_t (x,y)[1-\Omega(x,x)] +\\
+&-\int_x^ydz   \partial_x  \Omega_t (x,z) \partial_y  \Omega_t (z,y)
+\end{eqnarray}
+Note b.t.w. that $\Omega (x,x)$ is just the probability that locus $x$ belongs to the tracked haplotype.
+\begin{eqnarray}
+&\partial_t \partial_x \partial_y \Omega_{t} (x,y) =  -(y-x)\partial_x \partial_y \Omega_t (x,y)  - \partial_x \Omega_t (x,y)+ \partial_y \Omega_t (x,y) +\\
+&+\int_x^ydz   \partial_x  \Omega_t (x,z) \partial_y  \Omega_t (z,y)+\partial_x \Omega_t (x,y)\Omega(y,y)
+- \partial_y \Omega_t (x,y)\Omega(x,x)
+\end{eqnarray}
+
+Suppose $\Omega_t (x,y)=\Omega_t(y-x)$. Then
+\begin{eqnarray}
+&\partial_t \partial_y^2 \Omega_{t} (y) =  -y \partial_y^2 \Omega_t (y)  - 2\partial_y \Omega_t (y)[1-\Omega_t (0)]+\int_0^ydz   \partial_z  \Omega_t (z) \partial_y  \Omega_t (y-z)
+\end{eqnarray}
+Of course we can now go back to $\chi_t(y)=\partial_y \Omega_t(y)$ reducing the problem ALMOST to the one already solved
+\begin{eqnarray}
+&\partial_t \partial_y \chi_{t} (y) =  -y \partial_y \chi_t (y)  -2[1-\Omega_t (0)] \chi_t (y)+\int_0^ydz   \chi_t (z)  \chi_t (y-z)
+\end{eqnarray}
+Defining a Laplace transform w.r.t. $y$ as $\hat{\chi}_t(s)=\int_0^{\infty}dy \chi_t(y)$ we have
+\begin{eqnarray}
+&s\partial_t \hat{ \chi}_{t} (s)-\partial_t { \chi}_{t} (0) =   \partial_s s\hat{\chi}_t (s)  -2[1-\Omega_t (0)] \hat{\chi}_t (s)+\hat{\chi}_t^2 (s)
+\end{eqnarray}
+\begin{eqnarray}
+&s\left [\partial_t \hat{ \chi}_{t} (s)-\partial_s \hat{ \chi}_{t} (s) \right ]+[1-2\Omega_t (0)]\hat{\chi}_t (s)-\hat{\chi}_t^2 (s)=\partial_t { \chi}_{t} (0) 
+\end{eqnarray}
+
+\section*{IBD block distribution, beyond MFT}
+To do that we follow what we did to calculate allele number distribution, except Baird,Etheridge and Barton already wrote it down in 2003.
+
+Let $c(y)$ be the cumulant number of blocks with length $<y$, and $n (y) = \partial_y c(y)$ be the density distribution, which can be quite singular. Let $P_t (n(\xi ) |y)$ be the probability of finding distribution $n (\xi )$ in the population $t$ generations later, provided that original ancestral generation has a single block of length $y$; i.e. $n(\xi)=\delta (\xi -y)$. Next we define a Laplace transform
+\begin{eqnarray}
+L_t(\omega (\xi ) | y )=\int D n (\xi ') e^{-\int_0^{1} d\xi \omega (\xi ) n (\xi )}P_t ( n(\xi ' ) |y)
+\end{eqnarray}
+so that $L_t(\omega (\xi ) | y )$ for constant $\omega (\xi ) = \kappa$  (in which case $\int_0^{1} d\xi \omega (\xi ) n (\xi ) = \kappa \bar{n}$ where $n$ is the total number of blocks) define the generating function for the distribution of reproductive values for the length $y$ block. Note we have to be a careful about what happens at $\xi=0$ which corresponds to block of length $0$ or a lost block! It makes sense to explicitly exclude it by enforcing $\omega (0)=0$. Another simple example is $\omega (\xi ) = \zeta \xi$ will define the generating function for the population TOTAL block length $\bar{\xi} =\int_0^{1} d\xi \xi  n (\xi )$.
+
+As usual we write the "first step" equation
+\begin{eqnarray}
+L_{t+1}(\omega (\xi ) | y )=\sum_{k=0}^{\infty} {(2\gamma )^k e^{-2\gamma} \over k!} \prod_{i=0}^k <L_{t}(\omega (\xi ) | y_i )>_{g(y_i |y)}
+\end{eqnarray}
+where 
+\begin{eqnarray}
+ <L_{t}(\omega (\xi ) | y_i )>_{g(y_i |y)}={1 \over 2}(1-y) L_{t}(\omega (\xi ) | 0 )+{1 \over 2}(1-y) L_{t}(\omega (\xi ) | y )+\int_0^y dy' L_{t}(\omega (\xi ) | y' )
+\end{eqnarray}
+
+\section*{Potts model for defining haplotypes from the data}
+
+We want an algorithm that will define "tiles" in the population/genome length plane, each tile corresponding to an ancestor. We are shooting to define the haplotype coverage of the genome $\sim \sqrt{N}$ deep. Suppose we bi-allelic loci $\sigma_i (k) =\pm 1$ being the allele at locus $k$ in genome $i$. Suppose $\phi_i (k)=\{ 1, 2,... M \}$ is the Potts "color" of genome $i$ at locus $k$. Of course color is going to define the cluster belongings. So the Potts energy then is
+\begin{eqnarray}
+ F= \sum_{k=1}^L \sum_{i \neq j} { 1 \over 2} [ 1-\sigma_i (k) \sigma_j (k) ] \delta_{\phi_i (k), \phi_j (k)} + \kappa \sum_{k=1}^{L-1} \sum_{\psi =1}^M \sum_{\psi' \neq \psi }^M\Theta \left [ \sum_{i }  \delta_{\phi_i (k), \psi}\delta_{\phi_i (k+1), \psi '} )\right ]
+\end{eqnarray}
+where the somewhat complicated second term is defined so as to count recombination events hitting color $\psi$ (and $\psi '$ ) between loci $k$ and $k+1$ only once.
+
+The key question is to check whether in the no recombination limit $\kappa \rightarrow \infty$ so that $\phi_i (k) = \phi_i $ color is independent of $k$ Potts model generates clustering that agrees with phylogenetic tree building algorithms.
+\begin{eqnarray}
+ F=  \sum_{i \neq j} \left [ \sum_{k=1}^L{ 1 \over 2} [ 1-\sigma_i (k) \sigma_j (k)] \right ] \delta_{\phi_i , \phi_j } = \sum_{i \neq j} d_{ij} \delta_{\phi_i , \phi_j } 
+\end{eqnarray}
+\end{document}
+
+

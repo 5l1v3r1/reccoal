@@ -1,0 +1,11 @@
+data
+figures
+*pickle
+*pdf
+*~
+*pyc
+
+*aux
+*out
+*log
+*bbl
