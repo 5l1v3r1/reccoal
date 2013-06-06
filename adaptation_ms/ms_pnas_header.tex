@@ -1,0 +1,75 @@
+%\documentclass[rmp, aps,twocolumn]{revtex4}
+\documentclass{pnastwo}
+\usepackage{pnastwoF}
+%\usepackage{dcolumn}
+
+\usepackage[english]{babel}
+%\usepackage[utf8x]{inputenc}
+\usepackage{amsmath,amsfonts,amssymb,eucal,eurosym,textcomp}
+\usepackage{color}
+\usepackage{graphicx}
+\usepackage{hyperref}
+%\usepackage[caption=false]{subfig}
+%\usepackage{natbib}
+%\usepackage{pslatex}
+%\usepackage[colorlinks,linkcolor=red,citecolor=blue]{hyperref}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\graphicspath{{ms_figures/}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\comment}[1]{\textit{\textcolor{red}{#1}}}
+\newcommand{\mut}{\mu}
+\newcommand{\ox}{r}
+\newcommand{\xo}{\rho}
+\newcommand{\Ne}{N_e}
+\newcommand{\sigblock}{\sigma_\xi}
+\newcommand{\sigblockT}{\sigma_b}
+\newcommand{\block}{\xi}
+\newcommand{\blockT}{\xi_b}
+\newcommand{\mTtwo}{\langle T_2\rangle}
+\newcommand{\vardensity}{\vartheta}
+\newcommand{\FIG}[1]{Fig.~\ref{fig:#1}}
+\newcommand{\EQ}[1]{Eq.~\ref{eq:#1}}
+\newcommand{\FIGS}[2]{Figs.~\ref{fig:#1} and~\ref{fig:#2}}
+\newcommand{\beast}[1]{{\it #1}}
+
+\newcommand{\FigSketch}{Fig.~1}
+\newcommand{\FigTtwo}{Fig.~2}
+\newcommand{\FigSFS}{Fig.~3}
+\newcommand{\FigLD}{Fig.~4}
+\newcommand{\FigAda}{Fig.~5}
+
+\newcommand{\Author}{Richard A.~Neher\affil{1}{Evolutionary Dynamics and
+    Biophysics Group, Max Planck Institute for Developmental Biology,
+    72076, T\"ubingen, Germany}, Taylor A.~Kessinger\affil{1}, and Boris
+  I.~Shraiman\affil{2}{ Kavli Institute for Theoretical Physics}\affil{3}{Department of Physics, University of California, Santa
+  Barbara, 93116, CA, USA}} 
+
+\newcommand{\Title}
+{%Genealogies, genetic draft, and the speed of adaptation in sexual populations
+  Coalescence, genetic diversity and adaptation in sexual populations
+%Evolutionary dynamics of sexual populations driven by numerous nearly neutral mutations.
+}
+
+%\bibliographystyle{genetics}
+\bibliographystyle{pnas}
+
+\begin{document}
+\title{\Title}
+\date{\today} 
+\author{\Author}
+\date{\today}
+
+%\twocolumn
+\maketitle
+\begin{article}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\input{ms.tex}
+
+
+\end{article}
+\appendix
+\input{supplement_body.tex}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+

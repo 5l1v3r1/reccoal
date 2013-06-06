@@ -1,0 +1,810 @@
+\begin{abstract}
+\noindent
+In diverse sexual populations, selection operates neither on the whole
+genome -- which is repeatedly taken apart and reassembled by
+recombination -- nor on individual alleles which are tightly linked to
+the chromosomal neighborhood. Those tightly linked alleles affect each
+others dynamics which reduces the efficiency of selection and distorts
+patterns of genetic diversity. Inference of evolutionary history from
+diversity shaped by linked selection requires an understanding of these
+patterns.  Here, we reexamine this problem in the light of recent
+progress in coalescent theory of rapidly adapting asexual
+populations. We present a simple but powerful scaling analysis
+identifying the unit of selection as the genomic ``linkage block'' with
+characteristic length $\blockT$, which is determined in a
+self-consistent manner by the condition that the rate of recombination
+within the block is comparable to the fitness differences between
+different alleles of the block.  We find that an asexual model with
+strength of selection tuned to that of the linkage block provides an
+excellent description of genetic diversity and the site frequency
+spectra when compared to computer simulations of population
+dynamics. This correspondence holds for the entire spectrum of strength
+of selection. When fitness differentials arise from the
+collective contribution of numerous weakly selected polymorphisms, the
+rate of adaptation increases as the square root of the recombination
+rate. Linkage block approximation thus provides a simple but powerful
+tool for understanding interference and collective behavior of dense
+weakly selected loci.
+\end{abstract}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\section{Introduction}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+In asexual populations different genomes compete for survival and the
+fate of most new mutations depends more on the total fitness of the genome they
+resides in than on their own contribution to fitness.  In this way,
+different genetic loci on the same genome interact or ``interfere'' with
+each other. As a result, beneficial mutations can be lost to competition
+with other clones, an effect known as ``clonal interference''
+\cite{Gerrish:1998p5933,Desai:2007p954,neher_genetic_2013}, while
+deleterious mutations in very fit genomes can fix. This inefficiency of
+selection is reduced by sexual reproduction and disappears in an idealized limit
+where all loci are reassorted fast enough so
+that selection can act independently on different loci. 
+
+In most organisms, recombination of genetic material is achieved by
+crossing over of homologous chromosomes. As a result, the fates of distant loci are
+rapidly decoupled, but the interference between
+nearby tightly linked loci remains. This effect of linked selection, known as
+Hill-Robertson interference \cite{Hill:1966p21029} or
+``genetic draft'', is particularly important in diverse populations
+where polymorphisms are dense \cite{cutter_molecular_2013} and in
+faculatively outcrossing species where the effective rate of recombination is
+low
+\cite{bomblies_local-scale_2010,tsai_population_2008,barriere_high_2005}.
+
+One indication of the importance of linked selection is
+the weak correlation between levels of genetic diversity -- a measure of
+the typical time to the most recent common ancestor at a particular
+locus -- and the population size
+\cite{leffler_revisiting_2012,Lewontin1974}. In conflict with
+observations, classic neutral models of population genetics predict that
+diversity should increase linearly with the population size
+\cite{Kingman:1982p28911,Kimura:1964p3388}.  This ``paradox of
+variation'' is resolved if the time to the most recent common ancestor
+(MRCA) is controlled by selection rather than random genetic drift
+\cite{Smith:1974p34217,Gillespie:2001p9636}. 
+If linked selection
+rather than drift drives coalescence towards the MRCA, a weak
+correlation between population size and diversity is expected.
+
+
+% In addition to reducing genetic diversity, linked selection also reduced
+% the efficacy of selection. This effect was first described by Hill and
+% Robertson \cite{Hill:1966p21029}, who observed that 
+% the fixation probability of two beneficial mutations increases with the
+% recombination rate between those loci. \cite{Barton:1994p34628} has shown that a sweeping allele with
+% selection coefficient $s$ reduces the fixation probability of weaker
+% alleles over a time $\approx s^{-1}$ in a segment of the chromosome of
+% width $s/\xo$, where $\xo$ is the crossover rate.
+% Weissman and Barton \cite{weissman_limits_2012} have extended this argument to the joint
+% effect of many sweeping loci and shown that the rate of adaptation is
+% primarily limited by the length of the genetic map.  In addition to
+% beneficial mutations, linkage to deleterious mutations reduces fixation
+% probabilities and genetic diversity
+% \cite{Charlesworth:1993p36005}. Background selection models have been
+% generalized to recombining populations
+% \cite{Hudson:1995p18197,Nordborg:1996p18149}, in which it has been shown that
+% the reduction of genetic diversity depends on the ratio of the
+% deleterious mutation rate and the crossover rate.
+
+Many populations harbor substantial heritable phenotypic variation which
+in a largely unknown way depends on a large number of polymorphisms in
+the genome. The majority of these polymorphisms have a
+small effects on phenotypes and fitness. Collectively, however, they can
+dominate phenotypic variation \cite{Yang:2010p35988} and possibly
+selection. Genetic variance collectively generated by weak
+(with and perhaps individually undetectable effects) alleles may be
+aptly thought of as ``genomic dark matter'' -- a term that we shall use
+below when referring to that limit. The dynamics of evolution and
+patterns of diversity in populations dominated by such dark matter are
+largely uncharacterized.
+Existing work has mainly assumed that selection operates
+on a small number of strongly selected loci whose dynamics is
+deterministic, at least at high frequencies
+\cite{Hill:1966p21029,Barton:1994p34628,weissman_limits_2012}; we discuss
+the relation of this work to ours below. 
+
+Here, we characterize the structure of genealogies, genetic diversity
+and the rate of adaptation in sexual populations in the genomic dark matter limit.
+We build on recent progress in the understanding of genealogies in
+adapting asexual populations
+\cite{neher_genealogies_2012,desai_genetic_2012,Brunet:2007p18866},
+which deviate strongly from the Kingman's coalescent
+\cite{Kingman:1982p28911} characteristic of neutral populations. We
+shall start by reviewing these results and their implication for
+observables such as the the site frequency spectra (SFS) of derived
+alleles
+\cite{Braverman:1995p34932,Neher:2011p42539,neher_genealogies_2012}. We
+shall than present a scaling argument that reduces the coalescence
+within an adapting sexually reproducing population to the already solved
+problem of asexual coalescence driven by selection and allows us to
+predict levels of genetic diversity, coalescent time scales, and site
+frequency spectra (SFS). We confirm the validity of the mapping to the asexual
+model by comparing its predictions with numerical simulations of
+evolving sexual populations. We use this approximation to
+demonstrate that in the ``genomic dark matter'' limit the rate of
+adaptation scales as a square root of recombination rate: a result also
+confirmed by numerical simulations.
+%In large and rapidly adapting populations, the time scale of coalescence is almost completely decoupled from the population size but depends primarily on the variance in fitness. In addition to reducing diversity, selection also changes the properties of coalescence trees, which for example results in the site frequency spectra (SFS) of derived alleles being non-monotonic with an excess of rare and common alleles \cite{Braverman:1995p34932,Neher:2011p42539,neher_genealogies_2012}. We show that genetic diversity in adapting sexual populations is well described by asexual models restricted to distances over which loci are in linkage disequilibrium.
+
+
+
+\section{Results}
+In a sexual population, different loci on the same chromosome can have
+different genealogical trees since they can be inherited from different
+(grand) parents. Neighboring loci, however, are separated rarely and
+locally the ancestral recombination graph is approximately asexual.
+Coalescence and interference is well understood in asexual populations,
+and we will use these results to shed light on the genetic diversity in
+adapting sexual populations. To this end, we determine the maximal
+segment length that coalesces into a common ancestor before it is
+disassembled by recombination. This yields self-consistent predictions
+for genetic diversity and the SFS that compare very well to
+simulations. In order to make the paper self-contained, we will quickly
+summarize the results on coalescence in asexual populations before
+discussing sexual populations.
+
+\subsection*{Coalescence in adapting asexual populations.}
+If fitness depends on a large number of polymorphic loci
+with comparable effects, the fitness distribution in the population will
+be roughly Gaussian, and the fittest individuals are $x_c \approx \sigma
+\sqrt{2\log N\sigma}$ ahead of the fitness mean, where $\sigma$ is the
+total fitness variance in the
+population\cite{Tsimring:1996p19688,Rouzine:2003p33590,Desai:2007p954}. 
+In large asexual populations, only individuals in the high
+fitness nose have an appreciable chance to contribute to future generations.  
+It will take those individuals roughly $\sigma^{-1}\sqrt{\log N\sigma}$
+generations to dominate the population, which sets the time scale of
+coalescence.  In contrast, in small populations with $N\sigma \ll 1$,
+coalescence is dominated by neutral processes (non-heritable
+fluctuations in offspring number known as genetic drift). The average 
+number of generations back to the most recent common ancestor of any
+pair of extant genomes, a.k.a. the pair coalescence time, is given by:
+\begin{equation}
+  \label{eq:asex}
+  \mTtwo \approx
+  \begin{cases}
+    N & N\sigma \ll 1 \\
+    c\sigma^{-1}\sqrt{2\log N\sigma} & N\sigma\gg 1
+  \end{cases}
+\end{equation}
+where $c$ is a number of order one
+\cite{neher_genealogies_2012,desai_genetic_2012}. In an attempt to
+extend applicability of the neutral coalescent, one sometimes defines an
+``effective population size'', $\Ne$, equal to $\mTtwo$ regardless of whether
+coalescence is neutral or not. By definition a neutral model with
+$\Ne=\mTtwo$ predicts the same levels of genetic diversity, but the
+statistical properties of the genealogies dominated by selection are quite
+different and cannot be papered over simply by redefining the population
+size. We will therefore avoid the term $\Ne$ and stick to $\mTtwo$. 
+
+For the approximately neutral case, $N\sigma\ll
+1$, the coalescent tree is of the Kingman type
+\cite{Kingman:1982p28911}, while for $N\sigma \gg 1$ it resembles the
+Bolthausen-Sznitman coalescent (BSC)
+\cite{Bolthausen:1998p47390,Brunet:2007p18866}. Two representative
+coalescent trees sampled from asexual populations, one neutral and one
+rapidly adapting are shown in \FigSketch A.  
+
+%The Kingman coalescent and the
+%BSC correspond to qualitatively
+%different population genetics: the Kingman coalescent emerges when
+%frequencies of neutral alleles change through drift, while the BSC
+%corresponds dynamics dominated by selection.
+%genetic draft, i.e., fluctuations that result from heritable associations with genetic backgrounds of different fitness \cite{neher_genetic_2013}.
+
+\begin{figure}[th]
+  \centering
+  \includegraphics[width=0.98\columnwidth]{sketch}
+  \caption{
+    Coalescence in neutral and adapting populations. Panel (A) shows a
+    typical coalescent tree from neutral and adapting asexual
+    populations (left and right, respectively). In adapting populations,
+    coalescent trees branch asymmetrically and contain
+    approximate multiple mergers. Panel (B) illustrates 
+    asexual blocks in sexual populations. The sketch depicts a
+    representative chromosome at the bottom with polymorphisms
+    indicated as balls. Different loci within segments shorter than
+    $\blockT$ share  most of their genealogical history, i.e., have
+    trees similar to the one indicated in the center of the
+    segment. Coalescence within this segment of length $\blockT$ is
+    either neutral or driven by the fitness differences between
+    different haplotypes spanning these segments. 
+    The fitness distribution of these haplotype blocks is indicated as
+    inset. Distant parts of the chromosome are in linkage
+    equilibrium and the trees changes as one
+    moves along the chromosome. The succession of changing trees
+    is the ancestral recombination graph.  
+  }
+  \label{fig:sketch}
+\end{figure}
+
+\subsection*{Sexual populations and recombination.}
+While in the asexual case all loci share the same genealogy and
+are selected as one unit, recombination decouples different loci -- the
+further apart, the more rapidly. The typical length of the segment that
+is not interrupted over a time $t$ along one ancestral lineage decreases
+with time as
+\begin{equation}
+  \label{eq:block_length}
+  \block = \frac{L}{1+L\xo t} \approx \frac{1}{\xo t}
+\end{equation}
+where $\xo$ is the crossover rate and $L$ is the length of the chromosome.
+The second approximation is justified whenever $\block\ll L$. If polymorphisms
+affecting fitness are spread evenly across the genome, we expect that
+a different segregating haplotypes with a segment of length $\block(t)$ 
+harbor fitness variation proportional to its length 
+\begin{equation}
+  \label{eq:sigma_block}
+  \sigblock^2 = \frac{\block(t)}{L}\sigma^2 \ .
+\end{equation}
+This fitness variance shrinks as the block length decreases over
+time. While initial fitness differences between blocks are large, they
+are chopped into smaller blocks so rapidly that selection has no time to
+amplify the fittest of these early large blocks. But the rate at which
+blocks are chopped down decreases as they get shorter, and at some point
+the rate of chopping them down is outweighed by the amplification of the
+fittest blocks by selection. The latter happens when fitness differences
+between haplotypes of this block are comparable to the recombination rate.
+More precisely, the relevant block length $\block(t)$ is the
+length that survives over the time scale of coalescence, i.e.,
+$\blockT=\block(\mTtwo)$. In large enough populations, the time scale of
+coalescence itself is determined by these fitness differences via
+\EQ{asex}, only that in sexual populations the 
+fitness variance, $\sigblockT^2$,  within the linkage block of length $\blockT$ sets the
+relevant scale of selection rather than the total variance $\sigma^2$
+as in asexual populations.  Using $\mTtwo = c{\sigblockT}^{-1}\sqrt{2\log
+  N\sigblockT}$ in \EQ{block_length}, we find for the length of linked
+blocks 
+\begin{equation}
+  \label{eq:blockTc}
+  \blockT = \frac{\sigblockT}{c\xo \sqrt{2\log N\sigblockT}} \ .
+\end{equation}
+Substituting $\blockT$ into \EQ{sigma_block}, yields
+\begin{equation}
+  \label{eq:self_consist}
+  \sigblockT = \frac{\sigma^2}{L\xo c\sqrt{2\log N\sigblockT}} \quad
+  \mathrm{and} \quad \blockT = \frac{\sigma^2}{2Lc\xo^2 \log
+    N\sigblockT} \ .
+\end{equation}
+Hence the relevant fitness scale is given by the
+fitness variance per maplength $r = L\rho$ with a logarithmic correction. 
+To arrive at this result, we have assumed that coalescence is driven
+by selection, i.e., we have assumed $N\sigblockT\gg 1$. If this
+condition is not satified, local coalescence will be approximately
+neutral. In this case $\mTtwo = N$ and the LD extends over
+$\blockT\sim (N\rho)^{-1}$ nucleotides.
+
+The condition for draft dominance, $N\sigblockT\gg 1$, is more
+stringent in sexual populations than in asexual populations,
+$N\sigma\gg 1$. In other words, recombination reduces interference and
+results in drift dominated coalescence over a larger parameter range. 
+Our prediction now is that the results for genetic diversity in the
+asexual coalescent apply with $\sigblockT^2$ as the local fitness variance,
+and that linkage disequilibrium between common loci extends over
+a distance $\blockT$. We will validate these predictions by forward
+simulations of different population models.
+
+\subsection*{Fixed rate of adaptation.}
+The first model we consider is a population in which the fitness
+variance is set by external (environmental) factors; see Model and
+Methods. This model might be a first approximation to scenarios where
+selection pressures are dictated by a changing environment, an evolving
+immune system, or a breeder who imposes a certain selection differential
+during artificial selection.  We simulate our populations using a
+discrete generation model with an approximately constant population size
+and a finite number of sites in the genome as implemented in FFPopSim
+\cite{zanini_ffpopsim:_2012} (see Methods).  In addition to simple
+forward simulation, we track the genealogy of a locus in the center of
+the chromosome, which allows us to study properties of representative
+coalescent trees such as pair coalescence times or the SFS of derived
+alleles (SFS).
+
+After equilibration, we sample the evolving population in roughly
+$\mTtwo$ intervals and measure $T_2$, $T_{MRCA}$, the SFS, and the
+linkage disequilibrium (LD) between polymorphisms at intermediate
+frequencies ($[0.1, 0.9]$). We perform these simulations for many
+combinations of parameters. For each of these combinations, we calculate
+$\sigblockT$ according to \EQ{self_consist}. \FigTtwo~shows
+that the average pair coalescence time $\mTtwo$ approaches $N$ for
+$N\sigblockT\to 0$ and that it is proportional to $\sigblockT^{-1}$ (with
+logarithmic corrections) for $N\sigblockT\gg 1$ as prediced.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.91\columnwidth]{T2}
+  \caption{Coalesence in sexual populations. The figure shows the
+    average pair
+    coalescent time $\mTtwo$ relative to the neutral expectation as a
+    function of $N\sigblockT$ determined using \EQ{self_consist}. For $N\sigblockT\ll 1$, $\mTtwo\approx N$,
+    while $\mTtwo\sim \sigblockT^{-1}$ otherwise. }
+  \label{fig:Ttwo}
+\end{figure}
+
+In addition to the reduction in genetic diversity, we predict that the
+local genealogies will resemble the BSC
+rather than the Kingman coalescent whenever $N\sigblockT\gg 1$. One
+characteristic of the BSC is a non-monotonic SFS with a steep
+divergence $f(\nu)\sim\nu^{-2}$ for rare alleles. \FigSFS~shows a
+collection of SFS colored by the parameter $N\sigblockT$. For large
+$N\sigblockT$, the SFS agree with the prediction of the BSC and
+smoothly interpolate between the BSC result and the Kingman coalescent
+as $N\sigblockT$ decreases. As soon as the SFS starts deviating from
+the prediction of the Kingman coalescent, Tajima's D and related
+measures turn negative.  
+
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.91\columnwidth]{SFS}  
+  \caption{Site frequency spectra (SFS). The figure shows the SFS for a
+    large number of simulations. Color indicates the value of
+    $N\sigblockT$. For large $N\sigblockT$, the SFS display the
+    non-monotonicity characteristic of the BSC (dashed line), while the
+    SFS are well described by the prediction from Kingman's coalescent
+    (solid line) if $N\sigblockT\ll 1$. }
+  \label{fig:SFS}
+\end{figure}
+
+The SFS records properties of the genealogy at a particular
+locus. Another important feature of diversity in sexual populations is
+the genomic distance across which loci share much of their
+genealogy. This can be quantified by measuring the correlations between
+loci (LD) at different distances. In order for our picture to be
+consistent, the extend of LD should be approximately equal to $\blockT = (\xo
+\mTtwo)^{-1}$. We measured LD as $r^2(d)$ for different distances $d$ and
+plot its distance dependence against $d/\blockT$; see \FigLD. As
+predicted, the distance over which loci are correlated
+is well described by $\blockT =(\xo T_2)^{-1}$.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.91\columnwidth]{LD}
+  \caption{Correlation length along the genome. The figure shows
+    linkage disequilibrium, quantified as average $r^2$, at different
+    distances (the curves are normalized to their value at zero
+    distance). The x-axis shows the distance between loci $d$ rescaled by
+    $\blockT$ determined using \EQ{block_length} with $t$ equal to the measured pair
+    coalescence time. After this rescaling, the distance dependence of all
+    simulations follow approximately the same master curve, which
+    shows that LD extends for $\approx \blockT$. }
+  \label{fig:LD}
+\end{figure}
+
+
+In our second model, we keep mutational effects constant instead of
+adjusting them to keep the overall fitness variance fixed. In this case,
+the total fitness variance is a fluctuating quantity, but the behavior
+is equivalent to the first model with the fixed variance replaced by the
+average.  Figures analogous to \FigTtwo~to \FigLD~are
+given in the supplement.
+
+
+\subsection*{Adaptation on genomic ``dark matter''.}
+We now consider a model where the fitness variance and diversity are set
+by a balance between frequent novel mutations of small effect and the removal of variation by
+selection, i.e., fixation of beneficial alleles and purging of
+deleterious alleles. This type of model has been studied for asexual populations
+\cite{Kessler:1997p19690,Cohen:2005p45154} where the total
+fitness variation is given by
+\begin{equation}
+  \label{eq:sigma_total_diffusive}
+  \sigma^2 \approx \frac{L \mu \langle s^2 \rangle}{2} \mTtwo \ .
+\end{equation}
+Here, $\mu$ is the mutation rate and $\langle s^2 \rangle$ is the second
+moment of distribution of mutational effects
+\cite{neher_genealogies_2012}. The quantity $D=\frac{\mu \langle s^2
+  \rangle}{2}$ is the ``fitness diffusion'' constant of lineages in the
+absence of selection, and variation in this population has accumulated
+over the time it takes a few lineages to dominate the population, which is
+approximately given by the half the pair coalesence
+time\cite{neher_genealogies_2012}. Note that in this case $\sigma^2$
+depends on  the local variance $\sigblockT^2$ through $\mTtwo$. Hence
+\EQ{self_consist} is not yet explicit.
+Substituting \EQ{sigma_total_diffusive} and \EQ{block_length} into
+\EQ{sigma_block}, we find
+\begin{equation}
+  \label{eq:sigma_block_DM}
+  \sigblockT^2 =  {\frac{\mu\langle s^2 \rangle}{2\xo}}
+\end{equation}
+Remarkably, this variance of the effectively asexual blocks is simply
+the ratio of variance injection per nucleotide, $\mu \langle s^2 \rangle$, and the
+crossover rate (at least while $N\sigblockT\gg 1$). The coalescence time
+cancels! We therefore find for $\mTtwo$ 
+\begin{equation}
+  \label{eq:Tc_diffusive}
+  \mTtwo \approx
+  \begin{cases}
+    N & N\sqrt{\mu\langle s^2 \rangle\xo^{-1}} \ll 1 \\
+   c\sqrt{\frac{\xo\log N\sigblockT}{\mu \langle s^2\rangle} } & N\sqrt{\mu\langle s^2 \rangle\xo^{-1}} \gg 1\\ 
+  \end{cases}
+\end{equation}
+where $c$ is again a constant of order 1. In the limit where coalesence
+is driven by selection, the total rate of adaptation is therefore 
+\begin{equation}
+  \label{eq:adaptation_diffusive}
+  \sigma^2 \approx cL\sqrt{\xo \mu \langle s^2\rangle \log N\sigblockT} \ .
+\end{equation}
+
+We simulate this limit of many mutations with small effect by mutating
+loci at random at a high rate. Since the effects of individual loci are
+small, deleterious alleles will fix often, and the population settles into
+a dynamic equilibrium where the fixation of beneficial mutations is roughly canceled out
+by that of deleterious mutations \cite{Goyal:2012p47382}. In this dynamic
+balance, many weak effect mutations segregate, and the population is
+constantly adapting to counter the influx of deleterious mutations.  As
+above, the pair coalescence times (genetic diversity), SFS,
+and LD scale are well predicted by $N\sigblockT$. The figures
+corresponding to \FigTtwo~to \FigLD~look very similar (see Supplementary
+Information). The prediction for the total fitness variance,
+\EQ{adaptation_diffusive}, is compared to the simulation results in
+\FigAda.
+
+% Note that in this limit where adaptation
+% draws on many mutations with tiny effects, the dependence of
+% $\sigma^2$ on the parameters is different from the behavior found in
+% \cite{weissman_limits_2012}, where $\sigma^2$ was proportional to the
+% map length $R=\xo L$, or in a model of facultative outcrossing, where
+% $\sigma^2$ is proportional to the square of the outcrossing rate
+% \cite{Neher:2011p42539}. We shall explain the source of these
+% differences in the Discussion section.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.95\columnwidth]{adaptation_dynbalance}
+  \caption{The total fitness variation due to ``dark matter'' in a model
+    where frequent deleterious mutations are balanced by beneficial mutations. The
+    color shows the average number of crossovers per simulated
+    segment. There is a residual dependence on $\xo$, which is due to
+    large corrections to the asymptotic behavior.}
+  \label{fig:adaptation_dynbalance}
+\end{figure}
+
+
+% \begin{figure}
+%   \centering
+%   \includegraphics[width=0.98\columnwidth]{../../WeakSelectionCoalescent/figures/T2}
+%   \includegraphics[width=0.98\columnwidth]{../../WeakSelectionCoalescent/figures/SFS}
+%   \includegraphics[width=0.98\columnwidth]{../../WeakSelectionCoalescent/figures/LD}
+%   \caption{Coalescence with many weakly selected mutations.}
+%   \label{fig:diffusive}
+% \end{figure}
+
+% \subsection*{Changing environments}
+% We could consider a model where the mutation rate is high and the
+% preferred state of mutations changes every so often. This would be
+% akin to a viral population subject to immune predation or drug treatment
+% etc. It might be easier to swallow than the fixed $\sigma^2$. 
+
+\subsection*{Loosely linked loci.}
+Our analysis has focused on the effect of fitness variation in
+short effectively asexual blocks. As discussed above, the total
+strength of selection $\sigma$ can be much larger than the fitness
+differences within effectively asexual blocks $\sigblockT$. However,
+a particular locus only remains linked to distant polymorphisms
+for a short time, and the contribution of these distant loci
+averages out. For our focus on the effect of closely linked loci to be
+valid, the integral contribution of such loosely linked loci 
+to drift and draft should be small compared to the effect of
+fitness variation $\sigblockT$ within the segment.
+Loosely linked loci are amenable to a
+perturbative analysis known as Quasi-Linkage Equilibrium
+\cite{Kimura:1965p3008,Barton:1991p2659,Neher:2011p45096}. In
+Ref.~\cite{Neher:2011p45096}, it is shown that the stochastic dynamics of
+the allele frequency $\nu_i$ at locus $i$ due to loosely linked loci is
+described by the following Langevin equation:
+\begin{equation}
+  \label{eq:allele_langevin}
+  \frac{d}{dt}\nu_i(t) = \nu_i(1-\nu_i) s_i +2\mu(1-2\nu_i) + \sum_{i\neq
+    j}D_{ij}(t)s_j + \eta_i(t) \ ,
+\end{equation}
+where $D_{ij}(t)$ is the LD between loci $i$ and $j$, $s_j$ is the
+fitness effect of the derived allele at locus $j$, and $\eta_i$ is
+random noise with autocorrelation function $\langle
+\eta_i(t)\eta_i(t')\rangle =N^{-1}\delta(t-t')$, representing genetic
+drift. 
+%Langevin equations of this type are analogous to diffusion
+%equations but easier to handle in high dimensions
+%\cite{WGardiner:2004p36981}. 
+If the two loci are loosely linked, i.e., the
+recombination rate $r_{ij}$ between them is much larger than selection on either
+of them, $D_{ij}$  is also a fluctuating quantity. 
+The autocorrelation function of $D_{ij}$ is \cite{Neher:2011p45096}
+\begin{equation}
+  \label{eq:LD_autocorr}
+  \langle D_{ij}(t)D_{ij}(t')\rangle = \frac{\nu_i(1-\nu_i)\nu_j(1-\nu_j)e^{-r_{ij}|t-t'|}}{2Nr_{ij}} \ .
+\end{equation}
+Given this autocorrelation, we can now integrate over fluctuations due
+to genetic drift and loosely linked selected loci to obtain a
+renormalized diffusion coefficient, i.e., the reduction of the
+``effective population size''. Reproducing Eq.~44 of
+\cite{Neher:2011p45096}, we have
+\begin{equation}
+  \label{eq:Ne}
+  \frac{N}{N_e} = 1+\frac{1}{2}\sum_{i\neq j} \nu_j(1-\nu_j)\frac{s_j^2}{r_{ij}^2}
+\end{equation}
+This result is similar to results in
+\cite{Nordborg:1996p18149,Hudson:1995p18197,Santiago:1998p34629,Robertson:1961p36142}
+in that it shows that the level of drift is increased by a factor that
+depends on the square of the ratio of selection and linkage, averaged
+over the genome. Note, however, that this only holds for distant pairs
+where $r_{ij}\gg s_j$: the effect of ``draft'' can be represented by the
+renormalization of ``drift'' only as long as LD between the loci decorrelates quickly
+compared to coalescence and therefore remains weak.
+
+If we now consider the integral effect of all loci further away than
+$\xi$, it is always dominated by the loci at the smallest distance, so
+that $N/\Ne -1 \sim ( \sigma / r )^2 ( \xi / L)^{-1} $ (obtained as
+a continuum approximation to the sum in \EQ{LD_autocorr}). Hence
+provided that fitness variation at distant loci is sufficiently small
+(or the loci are sufficiently distant !) $\xi/L > ( \sigma / r)^2 $
+their effect can be accounted for by a simple rescaling of the effective
+population size \cite{weissman_limits_2012}: this is the {\it weak
+  draft} regime. Note, however, that the recombination rate between
+distant loci is ultimately limited by the outcrossing rate and that
+distant loci can have substantial effects in facultatively sexual
+populations \cite{Neher:2010p30641,weissman_limits_2012}.
+
+The negligible effect of loosely linked loci is a consequence of two
+types of averaging that are apparent in \EQ{LD_autocorr}: (i) The 
+associations between these distant loci are transient and average out
+over time. This manifests itself in the decay time of $r_{ij}^{-1}$ in
+\EQ{LD_autocorr}. (ii) Different individuals carry different alleles at
+these distant loci, and hence their fitness effect is averaged over
+different descendends. As a consequence, the auto-correlation in \EQ{LD_autocorr} is
+proportional to $(Nr_{ij})^{-1}$. Together, these two averages result
+in the $1/r_{ij}^2$ contribution of loosely linked loci.
+
+For the more tightly linked loci, i.e., $\xi <  \xi_*=( \sigma / r)^2 L
+%= \mathbf{\pi} \langle s^2 \rangle \rho^{-2} 
+$, the behavior crosses over
+to the {\it strong draft} regime. This crossover length scale $\xi_*$ is 
+controlled entirely by the {\it local}
+quantities: recombination rate per base pair $\rho$ and the local
+fitness variance density. Furthermore, $\xi_*$ is in general larger than
+$\blockT$ with 
+$\xi_*/\blockT \sim \log (N \sigblockT )$. This ratio corresponds to the
+reduction in the block size during the span of time between local
+selection effects first coming into play and the coalescence time. In
+the limit of $\log (N \sigblockT ) \gg 1$ recombination events within
+the $\xi_*$ block must be reckoned with, yet for more realistic population sizes,
+we have shown above that focusing on the $\blockT$-sized asexual segment
+captures the effects of strong draft quite well.
+
+\subsection*{Length distribution of segments identital by descent (IBD).}
+The structure of genealogies has implications for the length $\ell$ of
+IBD segments in pairs of individuals. Their
+distribution, $p(\ell )$, is directly related to the distribution of
+pair coalescence times, $q(T_2 )$, via $p(\ell ) \sim \int dT_2 q(T_2 )
+e^{-\rho \ell T_2} $ In neutrally evolving populations of constant size,
+pair coalescent times are exponentially distributed with mean
+$\mTtwo=N$. Consequently, the length of IBD segments is distributed as
+$p(\ell) \sim 1/(1+\rho \ell \mTtwo)$ and has a long slowly decaying
+tail.  If $N\sigblockT\gg 1$, coalescence is delayed since it happens predominantly after
+lineages have reached the upper tail of the distribution of fitnesses
+among different alleles of a linkage block. Hence the distribution of
+pair coalescence times is peaked at $\mTtwo$ (now controlled by
+selection and scaling with $\sigblockT^{-1}$).  Due to this delay of
+coalescence, $p(\ell ) \sim e^{-\rho \ell \mTtwo}$ is approximately
+exponential making long IBD segments much more unlikely than in the
+neutral case -- at least in large populations.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Discussion}
+In most sexual populations, the histories of different chromosomes or
+loci far apart on a chromosome are weakly correlated. Nearby loci,
+however, are more tightly linked, which results in correlated histories
+and linkage disequilibrium. Since the density of heterozygous sites
+is $\pi = 2\mu \mTtwo$ and the length scale of LD is $\blockT = (\xo
+\mTtwo)^{-1}$, the typical number of SNPs in one linkage block is on the
+order of $n \sim \mu/\xo$. While this number may be small in obligately
+outcrossing species, it can be large in regions of low recombination or
+species that outcross rarely, including many plants, nematodes, yeasts,
+and viruses
+\cite{bomblies_local-scale_2010,barriere_high_2005,Neher:2010p32691,tsai_population_2008}.
+If $n$ is much larger than one, and
+a sizeable fraction of those affect fitness, different haplotypes
+segregating within such a block will display a broad distribution in
+local fitness with a variance that we have denoted by
+$\sigblockT^2$. Neutral alleles linked to haplotypes drawn from this
+distribution will be affected by linked selection, a.k.a.~genetic
+draft. This in turn results in genealogies different from standard
+neutral models but similar to the Bolthausen-Sznitman coalescent (BSC)
+characteristic of rapidly adapting asexual populations
+\cite{neher_genealogies_2012,Neher:2011p42539}. 
+%Evidence for this
+%scenario has recently been found in populations of Pristionchus
+%pacificus (REF TO WORM PAPER).
+
+The scenarios described in this paper are relevant whenever selection on
+fitness differences between haplotypes of length $\blockT$ are larger
+than the inverse population size, i.e., $N \sigblockT >1$.  The fitness
+variance per block is given by $ \sigblockT^2 = \langle s^2\rangle \pi
+\blockT$, where $\langle s^2\rangle$ is the second moment of the effect
+distribution of polymorphisms. Hence
+we require $N^2\langle s^2\rangle > (\pi \blockT)^{-1}$.  Provided
+$n=\pi \blockT$ is large
+enough, even nominally neutral ($Ns <1$) polymorphisms collectively
+dominate the dynamics of haplotypes of length $\blockT$. This situation
+is what we refer to as the ``genomic dark matter'' scenario.
+
+
+\subsection*{Relation to previous work.}
+Most previous work on genetic draft and selective interference
+considered mutations with strong effects that behave deterministically
+at high frequencies, while our focus here was on genomic dark matter.
+Reduction of genetic diversity by sweeping beneficial mutations was first
+discussed by Maynard Smith \cite{Smith:1974p34217}; see also
+\cite{Barton:1998p28270,Gillespie:2000p28513}. In these models, genetic
+diversity is determined by the typical waiting time between two
+successive selective sweeps close enough to affect a given locus.
+Similarly, deleterious mutations reduce diversity at linked sites. 
+Assuming that mutations have a large detrimental effect on fitness and
+happen with rate $\mu$ per site,
+\cite{Hudson:1995p18197,Nordborg:1996p18149} have shown that the
+reduction of genetic diversity is a function of $\mu/\xo$. As in our
+analysis here, the strongest effect on genetic diversity comes from
+tightly linked loci.
+
+Weissman and Barton \cite{weissman_limits_2012} investigated the rate of adaptation and
+its effect on diversity using scaling arguments similar to the one
+presented here. In their model, adaptation is driven by individual
+selective sweeps. The duration of a sweep explicitly sets the
+time scale $\mTtwo$ on which coalescence happens. In this model, the
+speed of adaptation is proportional to the maplength. In
+contrast, our model assumes many weak effect mutations, and the
+time scale of coalescence is set by $\sigblockT$, which is
+self-consistently determined and itself depends on model parameters
+such as $\xo$ and $\mu \langle s^2\rangle$. We can
+recover their result for the rate of adaptation by
+setting  $\mTtwo\sim s^{-1}$ and $\blockT
+\sim s/\xo$. With these assumptions, we obtain
+\begin{equation}
+  \label{eq:weissman}
+  \sigma^2 \sim L \xo s
+\end{equation}
+instead of \EQ{adaptation_diffusive}. The model used in 
+Ref.~\cite{weissman_limits_2012} applies to a limit where at most one
+strongly selected and sweeping mutation falls into one linkage block,
+while our analysis considers the opposite limit. The basic properties of
+genealogies and SFS are expected to be qualitatively
+similar in the limit of one sweep per block. If the contribution from
+weak mutations is negligible while sweeps are common, the coalescence
+properties will be dominated by sweeps at different distances. This
+limit has been studied in \cite{Durrett:2005p40919} and also results in
+a multi-merger coalescent.
+
+We have previously investigated adaptation and genetic diversity in
+facultatively sexual populations that outcross rarely but recombine via
+many crossovers in the event of outcrossing
+\cite{Neher:2010p30641,Neher:2011p42539}; see also
+\cite{weissman_limits_2012}. In this case, the entire genome remains
+fully linked for times of the order of the inverse outcrossing rate, but
+all loci are decoupled in each outcrossing event.  If the outcrossing
+rate is much larger than fitness differences between individuals, the
+dynamics at neutral loci is only weakly affected. However, as soon as
+the outcrossing rate becomes comparable to $\sigma$, the diversity is
+strongly reduced, genetic draft becomes strong and genealogies resemble
+the BSC \cite{Neher:2011p42539}. This type of model is appropriate when
+the outcrossing rate is comparable to fitness differences between individuals and many loci
+segregate independently in these rare recombination events. Examples of
+such behavior include viruses like influenza or HIV. If outcrossing is
+frequent relative to $\sigma$ and the average number of crossovers is
+small, interference is dominated by tightly linked polymorphisms and the
+analysis presented here applies.
+
+
+
+\subsection*{Genomic dark matter versus sweeps.}
+In the limit of small effect mutations -- the genomic dark matter --
+beneficial and deleterious mutations have similar impact on diversity
+and coalescence since all that matters is their contribution to fitness
+variation. Inferences about their effect sizes are impossible.
+
+However, one often is interested in identifying particular mutations
+that arose in response to specific environmental challenges. If
+successful, those mutations tend to be of large effect and fall outside
+the scope of our model. Our model, however, provides the background on
+top of which such singular adaptations can be sought and understanding
+the statistical patterns of diversity and linkage within this null model
+is essential for reliable inference. Importantly, strong 
+adaptations only perturb a fraction of the genome (more precisely a
+segment of length $\approx s(\xo \log Ns)^{-1}$, where $s$ is the
+selection coefficient). 
+
+The genomic dark matter might also be responsible for the ``missing
+heritability'' in many genome wide association studies. If much of the
+phenotypic variation is due to a large number of loci with small
+effects, association studies will not be able to pinpoint the causal
+mutations, even though a trait is highly heritable \cite{Yang:2010p35988}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Model and Methods}
+We use a model with discrete generations, haploid individuals, an approximately constant
+population size and a finite number of sites in the genome, as
+implemented in FFPopSim \cite{zanini_ffpopsim:_2012}. We simulate a
+fraction of a chromosome of length $L$, where recombination happens with
+rate $\xo$ between randomly chosen gametes. If $\xo L\ll 1$, no
+recombination happens in most cases. In addition to forward simulation,
+we also track the genealogy of a central locus which allows us to measure pair
+coalesence times, the time to the MRCA, and the neutral SFS directly
+(this functionality is implemented in a more recent release of FFPopSim;
+see \url{http://code.google.com/p/ffpopsim}). For all parameters, we
+produce equilibrated populations by simulating for 10
+$T_{MRCA}$. Subsequent measurements of population parameters start from
+these equilibrated populations and sample the population roughly twice
+every $\mTtwo$ as estimated from our theoretical arguments. All scripts
+associated with this paper can be downloaded from
+\url{http://git.tuebingen.mpg.de/reccoal}.
+
+\subsection*{Fixed fitness variance.~}
+For simulations at fixed fitness, we specify $\sigma^2$ and, each generation, rescale
+the selection coefficients associated with individual loci accordingly.
+
+Mutations are introduced into a random individual whenever a locus
+turns monomorphic, i.e., the previously introduced mutation was lost
+or has fixed (see \cite{Neher:2011p42539}). This allows us to simulate
+a large number of sites efficiently in a limit where the overall
+mutation rate is small compared to $\mTtwo$. In this way, we keep all $L$ loci
+polymorphic without employing a high mutation rate, which would result
+in frequent recurrent mutations.
+
+We simulate a grid of parameters with $N$ taking the values $[1000,
+3000, 10000]$, $\sigma$ the values $[0.01, 0.03, 0.1]$, and $\ox$ five
+logarithmically spaced values between $0.1\sigma$ and $1.0 \sigma$. For the
+analysis, simulations were filtered so that $\blockT>30$ and
+$\blockT<L/3$. To prevent invalid logarithms, $\log(N\sigblockT)$ was
+replaced by $\log(N\sigblockT+1)$ in \EQ{self_consist}.
+
+
+\subsection*{Adaptation.~}
+Instead of fixing the variance, we now fix the selection
+coefficients. The variance is hence a fluctuating but roughly constant
+quantity. Again, mutations are introduced into a random individual
+whenever a locus turns monomorphic. 
+The grid of parameters in this case was $L\in [3000, 10000]$, $N\in
+[1000,3000, 10000]$ and $s \in [0.001, 0.003, 0.01]$. For the
+analysis, simulations were filtered such that $\blockT>30$ and
+$\blockT<L/3$. 
+
+
+
+
+
+\subsection*{Dynamic Balance.~}
+In this set of simulations, we simulate a genome consisting of finite sites in a
+constant fitness landscape where mutations at each locus have a small
+effect $s$. Mutations are injected at random with rate $\mu$ at each
+locus. In contrast to the models above, where mutations are injected
+only when a locus is monomorphic, in this
+case we allow recurrent and reversing mutations, which make possible the dynamic balance state. 
+
+The grid of parameters in this case was $L\in [3000, 10000]$, $N\in
+[1000,3000, 10000]$, $s \in [-0.001, -0.003, -0.01]$, $L\mu \in [1,3,
+10, 30]$, and $\xo$ logarithmically spaced between $s$ and $1.0$. 
+For the analysis, simulations were filtered such that $\blockT>30$, 
+$\blockT<L/3$, and $\mTtwo \mu <0.5$.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Acknowledgements}
+We would like to thank Fabio Zanini for stimulating discussions and help
+with FFPopSim. This work is supported by the ERC starting grant HIVEVO
+260686 to R.A.N and in part by the NSF PHY11-25915 grant to
+KITP. B.I.S. acknowledges support from NIH R01 GM086793.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\bibliographystyle{natbib}
+\bibliography{/ebio/ag-neher/share/bibliography/bib}
+%\newpage
+%\appendix
+%\clearpage
+%\onecolumngrid
+%\setcounter{figure}{0}
+%\input{supplement_body}
+
+

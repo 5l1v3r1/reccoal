@@ -1,0 +1,81 @@
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ARTICLE ON ADAPTATION IN SEXUAL POPULATION WITH A LINEAR CHROMOSOME
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[rmp]{revtex4}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage[english]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage{amsmath,amsfonts,amssymb,eucal,eurosym,textcomp}
+\usepackage{color}
+\usepackage{graphicx}
+\usepackage[caption=false]{subfig}
+\usepackage{natbib}
+\usepackage{pslatex}
+\usepackage[colorlinks,linkcolor=red,citecolor=blue]{hyperref}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\graphicspath{{.}{../figures/}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\comment}[1]{\textit{\textcolor{red}{#1}}}
+\newcommand{\mut}{\mu}
+\newcommand{\mfit}{\langle F\rangle}
+\newcommand{\mexpfit}{\langle e^{F}\rangle}
+\newcommand{\pfix}{P_{\mathrm{fix}}}
+\newcommand{\ox}{r}
+\newcommand{\xo}{\rho}
+\newcommand{\gt}{g}
+\newcommand{\locus}{s}
+\newcommand{\locuspm}{t}
+\newcommand{\Ne}{N_e}
+\newcommand{\sigblock}{\sigma_b}
+\newcommand{\sigblockT}{{\hat{\sigma}_b}}
+\newcommand{\block}{\xi_b}
+\newcommand{\blockT}{\hat{\xi}_b}
+\newcommand{\mTtwo}{\langle T_2\rangle}
+\newcommand{\vardensity}{\vartheta}
+\newcommand{\OO}{\mathcal{O}}
+\newcommand{\FIG}[1]{Fig.~\ref{fig:#1}}
+\newcommand{\EQ}[1]{Eq.~\ref{eq:#1}}
+\newcommand{\FIGS}[2]{Figs.~\ref{fig:#1} and~\ref{fig:#2}}
+\newcommand{\beast}[1]{{\it #1}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\renewcommand{\thesubfigure}{\Alph{subfigure}}
+\newcommand{\Author}{Richard A.~Neher${}^{1}$, Taylor A.~Kessinger${}^{1}$ and Boris I.~Shraiman${}^{2,3}$}
+\newcommand{\Title}
+{%Genealogies, genetic draft, and the speed of adaptation in sexual populations
+Supplementary Information: Coalescence, genetic diversity and adaptation in sexual populations
+%Evolutionary dynamics of sexual populations driven by numerous nearly neutral mutations.
+}
+
+\newcommand{\Affiliation}{${}^{1}$Max Planck Institute for Developmental
+  Biology, 72076 T\"ubingen, Germany, ${}^{2}$ Kavli Institute for
+  Theoretical Physics, and ${}^{3}$Department of Physics, University
+  of California, Santa Barbara, 93116, CA, USA}
+\newcommand{\Keywords}{{HIV}, {synonymous}, {population genetics}}
+%\hypersetup{pdfauthor={\Author}, pdftitle={\Title}, pdfkeywords={\Keywords}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\title{\Title}
+\author{\Author}
+\affiliation{\Affiliation}
+\date{\today}
+\maketitle
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\input{supplement_body.tex}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\bibliographystyle{natbib}
+\bibliography{/ebio/ag-neher/share/bibliography/bib}
+\newpage
+\appendix
+\onecolumngrid
+\setcounter{figure}{0}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
